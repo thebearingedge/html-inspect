@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "declaration": true,
+    "noEmit": true,
+    "strict": true,
+    "target": "es2015",
+    "moduleResolution": "node"
+  },
+  "include": [
+    "src/"
+  ],
+  "ts-node": {
+    "transpileOnly": true
+  }
+}
