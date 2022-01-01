@@ -3,7 +3,7 @@
     "declaration": true,
     "noEmit": true,
     "strict": true,
-    "target": "es2015",
+    "target": "esnext",
     "moduleResolution": "node"
   },
   "include": [
