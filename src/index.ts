@@ -1,4 +1,5 @@
 const NBSP = '&nbsp;'
+const VALID_KEY = /^[a-z_$]+[a-z0-9$_]*$/i
 
 function printLine(tokens: string, indent: number = 0, comma: boolean = false): string {
   return `<div>${NBSP.repeat(indent)}${tokens}${comma ? '<span>,</span>' : ''}</div>`
@@ -37,13 +38,18 @@ export default function htmlLog(value: any): string {
       printLine('<span>]</span>')
     ].join('')
   }
-  return ''
+  const keys = Object.keys(value)
+  return [
+    printLine('<span>{</span>'),
+    printObjectProperties(keys, value, 2),
+    printLine('<span>}</span>')
+  ].join('')
 }
 
 const objectHasOwn = Object.prototype.hasOwnProperty
 
-function hasOwnProperty(target: object, property: string | number): boolean {
-  return objectHasOwn.call(target, property)
+function hasOwnProperty(obj: object, property: string | number): boolean {
+  return objectHasOwn.call(obj, property)
 }
 
 function isLeaf(value: any): boolean {
@@ -59,7 +65,7 @@ function isLeaf(value: any): boolean {
 }
 
 function printArrayElements(array: any[], indent: number): string {
-  const elements = []
+  const lines = []
   for (let index = 0; index < array.length; index++) {
     let empty = 0
     while (!hasOwnProperty(array, index) && index < array.length) {
@@ -67,7 +73,7 @@ function printArrayElements(array: any[], indent: number): string {
       index++
     }
     if (empty > 0) {
-      elements.push(printLine(
+      lines.push(printLine(
         `<span>empty &times; ${empty}</span>`,
         indent,
         index < array.length - 1
@@ -75,58 +81,35 @@ function printArrayElements(array: any[], indent: number): string {
     }
     if (index >= array.length) break
     if (isLeaf(array[index])) {
-      elements.push(printLine(
+      lines.push(printLine(
         printLeaf(array[index]),
         indent,
         index < array.length - 1
       ))
     }
   }
-  return elements.join('')
+  return lines.join('')
 }
 
-function printPropertyKey(key: string, indent: number = 2): string {
-
-  return ''
+function printObjectProperties<T>(keys: Array<keyof T>, obj: T, indent: number): string {
+  const lines = []
+  for (let index = 0; index < keys.length; index++) {
+    lines.push(printLine(
+      printProperty(keys[index], obj),
+      indent,
+      index < keys.length - 1
+    ))
+  }
+  return lines.join('')
 }
 
-function printProperty(key: string, value: any, comma: boolean): string {
-
-  return ''
+function printPropertyKey(key: string): string {
+  return `<span>${VALID_KEY.test(key) ? key : `&quot;${key}&quot;`}</span>`
 }
 
-function printObject(obj: object, keys: string[], indent: number = 0): string {
-  // empty object
-  // non-empty object
-  // object as property value (indented)
-  // object as array element (indented from start)
-  /**
-   * {}
-   *
-   * {
-   *   foo: "bar",
-   *   "needs-quotes": true
-   * }
-   *
-   * {
-   *   foo: "bar",
-   *   "needs-quotes": true,
-   *   nested: {
-   *     foo: "bar",
-   *     "needs-quotes": true
-   *   }
-   * }
-   *
-   * [
-   *   {
-   *     foo: "bar",
-   *     "needs-quotes": true
-   *   },
-   *   {
-   *     foo: "bar",
-   *     "needs-quotes": true
-   *   }
-   * ]
-   */
+function printProperty<T>(key: keyof T, object: T): string {
+  if (isLeaf(object[key])) {
+    return `${printPropertyKey(String(key))}<span>:</span>&nbsp;${printLeaf(object[key])}`
+  }
   return ''
 }

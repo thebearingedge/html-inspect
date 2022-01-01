@@ -113,9 +113,33 @@ describe('objects', () => {
     `))
   })
 
-  it('prints leaf element properties')
+  it('prints leaf element properties', () => {
+    const object = {
+      foo: 'bar',
+      baz: true,
+      qux: 10
+    }
+    expect(htmlLog(object)).to.equal(oneLine(`
+      <div><span>{</span></div>
+      <div>&nbsp;&nbsp;<span>foo</span><span>:</span>&nbsp;<span>&quot;bar&quot;</span><span>,</span></div>
+      <div>&nbsp;&nbsp;<span>baz</span><span>:</span>&nbsp;<span>true</span><span>,</span></div>
+      <div>&nbsp;&nbsp;<span>qux</span><span>:</span>&nbsp;<span>10</span></div>
+      <div><span>}</span></div>
+    `))
+  })
 
-  it('quotes property keys where necessary')
+  it('quotes property keys where necessary', () => {
+    const object = {
+      foo: 'bar',
+      'needs-quotes': true
+    }
+    expect(htmlLog(object)).to.equal(oneLine(`
+      <div><span>{</span></div>
+      <div>&nbsp;&nbsp;<span>foo</span><span>:</span>&nbsp;<span>&quot;bar&quot;</span><span>,</span></div>
+      <div>&nbsp;&nbsp;<span>&quot;needs-quotes&quot;</span><span>:</span>&nbsp;<span>true</span></div>
+      <div><span>}</span></div>
+    `))
+  })
 
   it('prints empty instances of classes')
 
