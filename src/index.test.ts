@@ -1,41 +1,48 @@
 import { expect } from 'chai'
 import htmlLog from '.'
 
-describe('primitives', () => {
+describe('leaves', () => {
 
   it('prints strings', () => {
-    const output = htmlLog('this is a string')
-    expect(output).to.equal('<span>&quot;this is a string&quot;</span>')
+    expect(htmlLog('hello')).to.equal(oneLine(`
+      <div><span>&quot;hello&quot;</span></div>
+    `))
   })
 
   it('prints bigints', () => {
-    const output = htmlLog(0n)
-    expect(output).to.equal('<span>0n</span>')
+    expect(htmlLog(0n)).to.equal(oneLine(`
+      <div><span>0n</span></div>
+    `))
   })
 
   it('prints numbers', () => {
-    const output = htmlLog(42)
-    expect(output).to.equal('<span>42</span>')
+    expect(htmlLog(NaN)).to.equal(oneLine(`
+      <div><span>NaN</span></div>
+    `))
   })
 
   it('prints booleans', () => {
-    const output = htmlLog(true)
-    expect(output).to.equal('<span>true</span>')
+    expect(htmlLog(true)).to.equal(oneLine(`
+      <div><span>true</span></div>
+    `))
   })
 
   it('prints symbols', () => {
-    const output = htmlLog(Symbol('yo'))
-    expect(output).to.equal('<span>Symbol(yo)</span>')
+    expect(htmlLog(Symbol.iterator)).to.equal(oneLine(`
+      <div><span>Symbol(Symbol.iterator)</span></div>
+    `))
   })
 
   it('prints null', () => {
-    const output = htmlLog(null)
-    expect(output).to.equal('<span>null</span>')
+    expect(htmlLog(null)).to.equal(oneLine(`
+      <div><span>null</span></div>
+    `))
   })
 
   it('prints undefined', () => {
-    const output = htmlLog(undefined)
-    expect(output).to.equal('<span>undefined</span>')
+    expect(htmlLog(undefined)).to.equal(oneLine(`
+      <div><span>undefined</span></div>
+    `))
   })
 
 })
@@ -43,13 +50,15 @@ describe('primitives', () => {
 describe('functions', () => {
 
   it('prints anonymous functions', () => {
-    const output = htmlLog(function () {})
-    expect(output).to.equal('<span>[Function: (anonymous)]</span>')
+    expect(htmlLog(function () {})).to.equal(oneLine(`
+      <div><span>[Function (anonymous)]</span></div>
+    `))
   })
 
   it('prints named functions', () => {
-    const output = htmlLog(function foo() {})
-    expect(output).to.equal('<span>[Function: foo]</span>')
+    expect(htmlLog(function foo() {})).to.equal(oneLine(`
+      <div><span>[Function foo]</span></div>
+    `))
   })
 
 })
@@ -57,51 +66,39 @@ describe('functions', () => {
 describe('arrays', () => {
 
   it('prints empty arrays', () => {
-    const output = htmlLog([])
-    expect(output).to.equal('<span>[]</span>')
+    expect(htmlLog([])).to.equal(oneLine(`
+      <div><span>[]</span></div>
+    `))
+  })
+
+  it('prints arrays containing one leaf element', () => {
+    expect(htmlLog(['foo'])).to.equal(oneLine(`
+      <div><span>[</span></div>
+      <div>&nbsp;&nbsp;<span>&quot;foo&quot;</span></div>
+      <div><span>]</span></div>
+    `))
+  })
+
+  it('prints arrays of multiple leaf elements', () => {
+    expect(htmlLog(['foo', null, true])).to.equal(oneLine(`
+      <div><span>[</span></div>
+      <div>&nbsp;&nbsp;<span>&quot;foo&quot;</span><span>,</span></div>
+      <div>&nbsp;&nbsp;<span>null</span><span>,</span></div>
+      <div>&nbsp;&nbsp;<span>true</span></div>
+      <div><span>]</span></div>
+    `))
   })
 
   it('prints sparse arrays', () => {
     // eslint-disable-next-line no-sparse-arrays
-    expect(htmlLog(['yes', , , , , , 'yes'])).to.equal(oneLine(`
-    <div><span>[</span></div>
-      <div>&nbsp;&nbsp;<span>&quot;yes&quot;</span><span>,</span></div>
-      <div>&nbsp;&nbsp;<span>empty &times; 5</span><span>,</span></div>
-      <div>&nbsp;&nbsp;<span>&quot;yes&quot;</span></div>
-      <div><span>]</span></div>
-      `))
-    // eslint-disable-next-line no-sparse-arrays
-    expect(htmlLog([, , 'yes', 'yes', ,])).to.equal(oneLine(`
+    expect(htmlLog(['foo', , , 'bar', , , , 'baz', ,])).to.equal(oneLine(`
       <div><span>[</span></div>
-        <div>&nbsp;&nbsp;<span>empty &times; 2</span><span>,</span></div>
-        <div>&nbsp;&nbsp;<span>&quot;yes&quot;</span><span>,</span></div>
-        <div>&nbsp;&nbsp;<span>&quot;yes&quot;</span><span>,</span></div>
-        <div>&nbsp;&nbsp;<span>empty &times; 2</span><span></span></div>
-      <div><span>]</span></div>
-    `))
-  })
-
-  it('prints arrays containing one primitive', () => {
-    const output = htmlLog(['yes'])
-    expect(output).to.equal(oneLine(`
-      <div><span>[</span></div>
-      <div>&nbsp;&nbsp;<span>&quot;yes&quot;</span></div>
-      <div><span>]</span></div>
-    `))
-  })
-
-  it('prints arrays of multiple primitives', () => {
-    const input = [false, null, undefined, 0, 0n, '', Symbol('')]
-    const output = htmlLog(input)
-    expect(output).to.equal(oneLine(`
-      <div><span>[</span></div>
-      <div>&nbsp;&nbsp;<span>false</span><span>,</span></div>
-      <div>&nbsp;&nbsp;<span>null</span><span>,</span></div>
-      <div>&nbsp;&nbsp;<span>undefined</span><span>,</span></div>
-      <div>&nbsp;&nbsp;<span>0</span><span>,</span></div>
-      <div>&nbsp;&nbsp;<span>0n</span><span>,</span></div>
-      <div>&nbsp;&nbsp;<span>&quot;&quot;</span><span>,</span></div>
-      <div>&nbsp;&nbsp;<span>Symbol()</span></div>
+      <div>&nbsp;&nbsp;<span>&quot;foo&quot;</span><span>,</span></div>
+      <div>&nbsp;&nbsp;<span>empty &times; 2</span><span>,</span></div>
+      <div>&nbsp;&nbsp;<span>&quot;bar&quot;</span><span>,</span></div>
+      <div>&nbsp;&nbsp;<span>empty &times; 3</span><span>,</span></div>
+      <div>&nbsp;&nbsp;<span>&quot;baz&quot;</span><span>,</span></div>
+      <div>&nbsp;&nbsp;<span>empty &times; 1</span></div>
       <div><span>]</span></div>
     `))
   })
@@ -111,17 +108,18 @@ describe('arrays', () => {
 describe('objects', () => {
 
   it('prints empty objects', () => {
-    const output = htmlLog({})
-    expect(output).to.equal('<span>{}</span>')
+    expect(htmlLog({})).to.equal(oneLine(`
+      <div><span>{}</span></div>
+    `))
   })
 
-  it('prints primitive properties')
+  it('prints leaf element properties')
 
   it('quotes property keys where necessary')
 
   it('prints empty instances of classes')
 
-  it('prints primitive class index properties')
+  it('prints leaf element class index properties')
 
 })
 
