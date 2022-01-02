@@ -5,43 +5,43 @@ describe('leaves', () => {
 
   it('prints strings', () => {
     expect(htmlLog('hello')).to.equal(oneLine(`
-      <div><span>&quot;hello&quot;</span></div>
+      <div><span class="string">&quot;hello&quot;</span></div>
     `))
   })
 
   it('prints bigints', () => {
     expect(htmlLog(0n)).to.equal(oneLine(`
-      <div><span>0n</span></div>
+      <div><span class="number">0n</span></div>
     `))
   })
 
   it('prints numbers', () => {
     expect(htmlLog(NaN)).to.equal(oneLine(`
-      <div><span>NaN</span></div>
+      <div><span class="number">NaN</span></div>
     `))
   })
 
   it('prints booleans', () => {
     expect(htmlLog(true)).to.equal(oneLine(`
-      <div><span>true</span></div>
+      <div><span class="boolean">true</span></div>
     `))
   })
 
   it('prints symbols', () => {
     expect(htmlLog(Symbol.iterator)).to.equal(oneLine(`
-      <div><span>Symbol(Symbol.iterator)</span></div>
+      <div><span class="symbol">Symbol(Symbol.iterator)</span></div>
     `))
   })
 
   it('prints null', () => {
     expect(htmlLog(null)).to.equal(oneLine(`
-      <div><span>null</span></div>
+      <div><span class="null">null</span></div>
     `))
   })
 
   it('prints undefined', () => {
     expect(htmlLog(undefined)).to.equal(oneLine(`
-      <div><span>undefined</span></div>
+      <div><span class="undefined">undefined</span></div>
     `))
   })
 
@@ -51,13 +51,13 @@ describe('functions', () => {
 
   it('prints anonymous functions', () => {
     expect(htmlLog(function () {})).to.equal(oneLine(`
-      <div><span>[Function (anonymous)]</span></div>
+      <div><span class="function">[Function (anonymous)]</span></div>
     `))
   })
 
   it('prints named functions', () => {
     expect(htmlLog(function foo() {})).to.equal(oneLine(`
-      <div><span>[Function foo]</span></div>
+      <div><span class="function">[Function foo]</span></div>
     `))
   })
 
@@ -74,7 +74,7 @@ describe('arrays', () => {
   it('prints arrays containing one leaf element', () => {
     expect(htmlLog(['foo'])).to.equal(oneLine(`
       <div>[</div>
-      <div>  <span>&quot;foo&quot;</span></div>
+      <div>  <span class="string">&quot;foo&quot;</span></div>
       <div>]</div>
     `))
   })
@@ -82,9 +82,9 @@ describe('arrays', () => {
   it('prints arrays of multiple leaf elements', () => {
     expect(htmlLog(['foo', null, true])).to.equal(oneLine(`
       <div>[</div>
-      <div>  <span>&quot;foo&quot;</span>,</div>
-      <div>  <span>null</span>,</div>
-      <div>  <span>true</span></div>
+      <div>  <span class="string">&quot;foo&quot;</span>,</div>
+      <div>  <span class="null">null</span>,</div>
+      <div>  <span class="boolean">true</span></div>
       <div>]</div>
     `))
   })
@@ -101,10 +101,10 @@ describe('arrays', () => {
     expect(htmlLog(array)).to.equal(oneLine(`
       <div>[</div>
       <div>  {</div>
-      <div>    foo: <span>&quot;bar&quot;</span></div>
+      <div>    foo: <span class="string">&quot;bar&quot;</span></div>
       <div>  },</div>
       <div>  {</div>
-      <div>    foo: <span>&quot;bar&quot;</span></div>
+      <div>    foo: <span class="string">&quot;bar&quot;</span></div>
       <div>  }</div>
       <div>]</div>
     `))
@@ -118,14 +118,14 @@ describe('arrays', () => {
     expect(htmlLog(array)).to.equal(oneLine(`
       <div>[</div>
       <div>  [</div>
-      <div>    <span>&quot;foo&quot;</span>,</div>
-      <div>    <span>null</span>,</div>
-      <div>    <span>true</span></div>
+      <div>    <span class="string">&quot;foo&quot;</span>,</div>
+      <div>    <span class="null">null</span>,</div>
+      <div>    <span class="boolean">true</span></div>
       <div>  ],</div>
       <div>  [</div>
-      <div>    <span>&quot;foo&quot;</span>,</div>
-      <div>    <span>null</span>,</div>
-      <div>    <span>true</span></div>
+      <div>    <span class="string">&quot;foo&quot;</span>,</div>
+      <div>    <span class="null">null</span>,</div>
+      <div>    <span class="boolean">true</span></div>
       <div>  ]</div>
       <div>]</div>
     `))
@@ -135,11 +135,11 @@ describe('arrays', () => {
     // eslint-disable-next-line no-sparse-arrays
     expect(htmlLog(['foo', , , 'bar', , , , 'baz', ,])).to.equal(oneLine(`
       <div>[</div>
-      <div>  <span>&quot;foo&quot;</span>,</div>
+      <div>  <span class="string">&quot;foo&quot;</span>,</div>
       <div>  <span>empty &times; 2</span>,</div>
-      <div>  <span>&quot;bar&quot;</span>,</div>
+      <div>  <span class="string">&quot;bar&quot;</span>,</div>
       <div>  <span>empty &times; 3</span>,</div>
-      <div>  <span>&quot;baz&quot;</span>,</div>
+      <div>  <span class="string">&quot;baz&quot;</span>,</div>
       <div>  <span>empty &times; 1</span></div>
       <div>]</div>
     `))
@@ -151,13 +151,13 @@ describe('arrays', () => {
     ]
     array[1] = array
     expect(htmlLog(array)).to.equal(oneLine(`
-      <div><span>&lt;ref *1&gt;</span> [</div>
+      <div><span class="reference">&lt;ref *1&gt;</span> [</div>
       <div>  [</div>
-      <div>    <span>&quot;foo&quot;</span>,</div>
-      <div>    <span>null</span>,</div>
-      <div>    <span>true</span></div>
+      <div>    <span class="string">&quot;foo&quot;</span>,</div>
+      <div>    <span class="null">null</span>,</div>
+      <div>    <span class="boolean">true</span></div>
       <div>  ],</div>
-      <div>  <span>[Circular *1]</span></div>
+      <div>  <span class="reference">[Circular *1]</span></div>
       <div>]</div>
     `))
   })
@@ -180,9 +180,9 @@ describe('objects', () => {
     }
     expect(htmlLog(object)).to.equal(oneLine(`
       <div>{</div>
-      <div>  foo: <span>&quot;bar&quot;</span>,</div>
-      <div>  baz: <span>true</span>,</div>
-      <div>  qux: <span>10</span></div>
+      <div>  foo: <span class="string">&quot;bar&quot;</span>,</div>
+      <div>  baz: <span class="boolean">true</span>,</div>
+      <div>  qux: <span class="number">10</span></div>
       <div>}</div>
     `))
   })
@@ -194,8 +194,8 @@ describe('objects', () => {
     }
     expect(htmlLog(object)).to.equal(oneLine(`
       <div>{</div>
-      <div>  foo: <span>&quot;bar&quot;</span>,</div>
-      <div>  <span>&quot;needs-quotes&quot;</span>: <span>true</span></div>
+      <div>  foo: <span class="string">&quot;bar&quot;</span>,</div>
+      <div>  <span class="string">&quot;needs-quotes&quot;</span>: <span class="boolean">true</span></div>
       <div>}</div>
     `))
   })
@@ -211,11 +211,11 @@ describe('objects', () => {
     }
     expect(htmlLog(object)).to.equal(oneLine(`
       <div>{</div>
-      <div>  foo: <span>&quot;bar&quot;</span>,</div>
-      <div>  <span>&quot;needs-quotes&quot;</span>: <span>true</span>,</div>
+      <div>  foo: <span class="string">&quot;bar&quot;</span>,</div>
+      <div>  <span class="string">&quot;needs-quotes&quot;</span>: <span class="boolean">true</span>,</div>
       <div>  baz: {</div>
-      <div>    foo: <span>&quot;bar&quot;</span>,</div>
-      <div>    <span>&quot;needs-quotes&quot;</span>: <span>true</span></div>
+      <div>    foo: <span class="string">&quot;bar&quot;</span>,</div>
+      <div>    <span class="string">&quot;needs-quotes&quot;</span>: <span class="boolean">true</span></div>
       <div>  }</div>
       <div>}</div>
     `))
@@ -234,12 +234,12 @@ describe('objects', () => {
     expect(htmlLog(object)).to.equal(oneLine(`
       <div>{</div>
       <div>  baz: [</div>
-      <div>    <span>42</span>,</div>
-      <div>    <span>null</span>,</div>
-      <div>    <span>false</span></div>
+      <div>    <span class="number">42</span>,</div>
+      <div>    <span class="null">null</span>,</div>
+      <div>    <span class="boolean">false</span></div>
       <div>  ],</div>
-      <div>  foo: <span>&quot;bar&quot;</span>,</div>
-      <div>  <span>&quot;needs-quotes&quot;</span>: <span>true</span></div>
+      <div>  foo: <span class="string">&quot;bar&quot;</span>,</div>
+      <div>  <span class="string">&quot;needs-quotes&quot;</span>: <span class="boolean">true</span></div>
       <div>}</div>
     `))
   })
@@ -251,9 +251,9 @@ describe('objects', () => {
     }
     object.bar = object
     expect(htmlLog(object)).to.equal(oneLine(`
-      <div><span>&lt;ref *1&gt;</span> {</div>
-      <div>  foo: <span>1</span>,</div>
-      <div>  bar: <span>[Circular *1]</span></div>
+      <div><span class="reference">&lt;ref *1&gt;</span> {</div>
+      <div>  foo: <span class="number">1</span>,</div>
+      <div>  bar: <span class="reference">[Circular *1]</span></div>
       <div>}</div>
     `))
   })

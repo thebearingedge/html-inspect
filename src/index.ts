@@ -44,7 +44,7 @@ function printArray(
     if (typeof ref !== 'undefined') {
       ref[1]++
       lines.push(printLine(
-        `<span>[Circular *${ref[0]}]</span>`,
+        `<span class="reference">[Circular *${ref[0]}]</span>`,
         indent + 2,
         index < array.length - 1
       ))
@@ -75,7 +75,7 @@ function printArray(
     : ''
   const [id, count] = refs.get(array)!
   const ref = count > 0
-    ? `<span>&lt;ref *${id}&gt;</span> `
+    ? `<span class="reference">&lt;ref *${id}&gt;</span> `
     : ''
   lines[0] = printLine(`${propertyKey}${ref}[`, indent)
   lines.push(printLine(']', indent, comma))
@@ -107,7 +107,7 @@ function printObject(
     if (typeof ref !== 'undefined') {
       ref[1]++
       lines.push(printLine(
-        `${printPropertyKey(key)}: <span>[Circular *${ref[0]}]</span>`,
+        `${printPropertyKey(key)}: <span class="reference">[Circular *${ref[0]}]</span>`,
         indent + 2,
         index < keys.length - 1
       ))
@@ -140,7 +140,7 @@ function printObject(
     : ''
   const [id, count] = refs.get(object)!
   const ref = count > 0
-    ? `<span>&lt;ref *${id}&gt;</span> `
+    ? `<span class="reference">&lt;ref *${id}&gt;</span> `
     : ''
   lines[0] = printLine(`${propertyKey}${ref}{`, indent)
   lines.push(printLine('}', indent, comma))
@@ -150,7 +150,7 @@ function printObject(
 function printPropertyKey(key: string): string {
   return VALID_KEY.test(key)
     ? key
-    : `<span>&quot;${key}&quot;</span>`
+    : `<span class="string">&quot;${key}&quot;</span>`
 }
 
 function printLeaf(value: any): string {
@@ -158,15 +158,27 @@ function printLeaf(value: any): string {
     const name = typeof value.name === 'string' && value.name !== ''
       ? value.name
       : '(anonymous)'
-    return `<span>[Function ${name}]</span>`
+    return `<span class="function">[Function ${name}]</span>`
   }
-  if (typeof value === 'string') {
-    return `<span>&quot;${value}&quot;</span>`
+  switch (typeof value) {
+    case 'string':
+      return `<span class="string">&quot;${value}&quot;</span>`
+    case 'number':
+      return `<span class="number">${String(value)}</span>`
+    case 'boolean':
+      return `<span class="boolean">${String(value)}</span>`
+    case 'object':
+      return `<span class="null">${String(value)}</span>`
+    case 'undefined':
+      return `<span class="undefined">${String(value)}</span>`
+    case 'bigint':
+      return `<span class="number">${String(value)}n</span>`
+    case 'symbol':
+      return `<span class="symbol">${String(value)}</span>`
+    /* c8 ignore next 2 */
+    default:
+      return `<span>${String(value)}</span>`
   }
-  if (typeof value === 'bigint') {
-    return `<span>${String(value)}n</span>`
-  }
-  return `<span>${String(value)}</span>`
 }
 
 function printLine(tokens: string, indent: number = 0, comma: boolean = false): string {
