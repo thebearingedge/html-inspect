@@ -145,6 +145,8 @@ describe('arrays', () => {
     `))
   })
 
+  it('prints circular references')
+
 })
 
 describe('objects', () => {
@@ -223,6 +225,20 @@ describe('objects', () => {
       <div>  ],</div>
       <div>  foo: <span>&quot;bar&quot;</span>,</div>
       <div>  <span>&quot;needs-quotes&quot;</span>: <span>true</span></div>
+      <div>}</div>
+    `))
+  })
+
+  it('prints circular references', () => {
+    const object = {
+      foo: 1,
+      bar: {}
+    }
+    object.bar = object
+    expect(htmlLog(object)).to.equal(oneLine(`
+      <div><span>&lt;ref *1&gt;</span> {</div>
+      <div>  foo: <span>1</span>,</div>
+      <div>  bar: <span>[Circular *1]</span></div>
       <div>}</div>
     `))
   })

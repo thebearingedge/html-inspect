@@ -6,7 +6,15 @@ export default function htmlLog(value: any): string {
   return printLine(printLeaf(value))
 }
 
-function printArray(array: any[], indent: number = 0, comma: boolean = false, key?: string): string {
+type RefCounts = Map<any, [number, number]>
+
+function printArray(
+  array: any[],
+  refs: RefCounts = new Map(),
+  indent: number = 0,
+  comma: boolean = false,
+  key?: string
+): string {
   if (array.length === 0) {
     return printLine('[]', indent, comma)
   }
@@ -32,12 +40,14 @@ function printArray(array: any[], indent: number = 0, comma: boolean = false, ke
     if (isArray(array[index])) {
       lines.push(printArray(
         array[index],
+        refs,
         indent + 2,
         index < array.length - 1
       ))
     } else if (isObject(array[index])) {
       lines.push(printObject(
         array[index],
+        refs,
         indent + 2,
         index < array.length - 1
       ))
@@ -53,27 +63,45 @@ function printArray(array: any[], indent: number = 0, comma: boolean = false, ke
   return lines.join('')
 }
 
-function printObject(object: {[key: string]: any }, indent: number = 0, comma: boolean = false, key?: string): string {
+function printObject(
+  object: {[key: string]: any },
+  refs: RefCounts = new Map(),
+  indent: number = 0,
+  comma: boolean = false,
+  key?: string
+): string {
   const keys = Object.keys(object)
   if (keys.length === 0) {
     return printLine('{}', indent, comma)
   }
+  refs.set(object, [refs.size + 1, 0])
   const lines = [
     typeof key === 'string'
       ? printLine(`${printPropertyKey(key)}: {`, indent)
       : printLine('{', indent)
   ]
   for (let index = 0; index < keys.length; index++) {
-    if (isArray(object[keys[index]])) {
+    const value = object[keys[index]]
+    const ref = refs.get(value)
+    if (typeof ref !== 'undefined') {
+      ref[1]++
+      lines.push(printLine(
+        `${printPropertyKey(String(keys[index]))}: <span>[Circular *${ref[0]}]</span>`,
+        indent + 2,
+        index < keys.length - 1
+      ))
+    } else if (isArray(value)) {
       lines.push(printArray(
-        object[keys[index]],
+        value,
+        refs,
         indent + 2,
         index < keys.length - 1,
         keys[index]
       ))
-    } else if (isObject(object[keys[index]])) {
+    } else if (isObject(value)) {
       lines.push(printObject(
-        object[keys[index]],
+        value,
+        refs,
         indent + 2,
         index < keys.length - 1,
         keys[index]
@@ -85,6 +113,12 @@ function printObject(object: {[key: string]: any }, indent: number = 0, comma: b
         index < keys.length - 1
       ))
     }
+  }
+  const [id, count] = refs.get(object)!
+  if (count > 0) {
+    lines[0] = typeof key === 'string'
+      ? printLine(`<span>&lt;ref *${id}&gt;</span> ${printPropertyKey(key)}: {`, indent)
+      : printLine(`<span>&lt;ref *${id}&gt;</span> {`, indent)
   }
   lines.push(printLine('}', indent, comma))
   return lines.join('')
