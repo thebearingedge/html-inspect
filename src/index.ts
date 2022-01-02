@@ -78,11 +78,20 @@ function printObject(object: {[key: string]: any }, indent: number = 0, comma: b
       : printLine('{', indent)
   ]
   for (let index = 0; index < keys.length; index++) {
-    lines.push(printLine(
-      printProperty(keys[index], object),
-      indent + 2,
-      index < keys.length - 1
-    ))
+    if (isObject(object[keys[index]])) {
+      lines.push(printObject(
+        object[keys[index]],
+        indent + 2,
+        index < keys.length - 1,
+        keys[index]
+      ))
+    } else {
+      lines.push(printLine(
+        `${printPropertyKey(String(keys[index]))}: ${printLeaf(object[keys[index]])}`,
+        indent + 2,
+        index < keys.length - 1
+      ))
+    }
   }
   lines.push(printLine('}', indent, comma))
   return lines.join('')
@@ -92,10 +101,6 @@ function printPropertyKey(key: string): string {
   return VALID_KEY.test(key)
     ? key
     : `<span>&quot;${key}&quot;</span>`
-}
-
-function printProperty<T>(key: keyof T, object: T): string {
-  return `${printPropertyKey(String(key))}: ${printLeaf(object[key])}`
 }
 
 function isArray(value: any): value is any[] {

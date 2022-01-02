@@ -141,7 +141,30 @@ describe('objects', () => {
     `))
   })
 
-  it('prints empty instances of classes')
+  it('prints nested objects', () => {
+    const object = {
+      foo: 'bar',
+      'needs-quotes': true,
+      baz: {
+        foo: 'bar',
+        'needs-quotes': true
+      }
+    }
+    expect(htmlLog(object)).to.equal(oneLine(`
+      <div>{</div>
+      <div>  foo: <span>&quot;bar&quot;</span>,</div>
+      <div>  <span>&quot;needs-quotes&quot;</span>: <span>true</span>,</div>
+      <div>  baz: {</div>
+      <div>    foo: <span>&quot;bar&quot;</span>,</div>
+      <div>    <span>&quot;needs-quotes&quot;</span>: <span>true</span></div>
+      <div>  }</div>
+      <div>}</div>
+    `))
+  })
+
+  it('prints array properties')
+
+  it('prints instances of classes')
 
   it('prints leaf element class index properties')
 
