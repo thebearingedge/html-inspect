@@ -67,39 +67,39 @@ describe('arrays', () => {
 
   it('prints empty arrays', () => {
     expect(htmlLog([])).to.equal(oneLine(`
-      <div><span>[]</span></div>
+      <div>[]</div>
     `))
   })
 
   it('prints arrays containing one leaf element', () => {
     expect(htmlLog(['foo'])).to.equal(oneLine(`
-      <div><span>[</span></div>
+      <div>[</div>
       <div>&nbsp;&nbsp;<span>&quot;foo&quot;</span></div>
-      <div><span>]</span></div>
+      <div>]</div>
     `))
   })
 
   it('prints arrays of multiple leaf elements', () => {
     expect(htmlLog(['foo', null, true])).to.equal(oneLine(`
-      <div><span>[</span></div>
-      <div>&nbsp;&nbsp;<span>&quot;foo&quot;</span><span>,</span></div>
-      <div>&nbsp;&nbsp;<span>null</span><span>,</span></div>
+      <div>[</div>
+      <div>&nbsp;&nbsp;<span>&quot;foo&quot;</span>,</div>
+      <div>&nbsp;&nbsp;<span>null</span>,</div>
       <div>&nbsp;&nbsp;<span>true</span></div>
-      <div><span>]</span></div>
+      <div>]</div>
     `))
   })
 
   it('prints sparse arrays', () => {
     // eslint-disable-next-line no-sparse-arrays
     expect(htmlLog(['foo', , , 'bar', , , , 'baz', ,])).to.equal(oneLine(`
-      <div><span>[</span></div>
-      <div>&nbsp;&nbsp;<span>&quot;foo&quot;</span><span>,</span></div>
-      <div>&nbsp;&nbsp;<span>empty &times; 2</span><span>,</span></div>
-      <div>&nbsp;&nbsp;<span>&quot;bar&quot;</span><span>,</span></div>
-      <div>&nbsp;&nbsp;<span>empty &times; 3</span><span>,</span></div>
-      <div>&nbsp;&nbsp;<span>&quot;baz&quot;</span><span>,</span></div>
+      <div>[</div>
+      <div>&nbsp;&nbsp;<span>&quot;foo&quot;</span>,</div>
+      <div>&nbsp;&nbsp;<span>empty &times; 2</span>,</div>
+      <div>&nbsp;&nbsp;<span>&quot;bar&quot;</span>,</div>
+      <div>&nbsp;&nbsp;<span>empty &times; 3</span>,</div>
+      <div>&nbsp;&nbsp;<span>&quot;baz&quot;</span>,</div>
       <div>&nbsp;&nbsp;<span>empty &times; 1</span></div>
-      <div><span>]</span></div>
+      <div>]</div>
     `))
   })
 
@@ -109,7 +109,7 @@ describe('objects', () => {
 
   it('prints empty objects', () => {
     expect(htmlLog({})).to.equal(oneLine(`
-      <div><span>{}</span></div>
+      <div>{}</div>
     `))
   })
 
@@ -120,11 +120,11 @@ describe('objects', () => {
       qux: 10
     }
     expect(htmlLog(object)).to.equal(oneLine(`
-      <div><span>{</span></div>
-      <div>&nbsp;&nbsp;<span>foo</span><span>:</span>&nbsp;<span>&quot;bar&quot;</span><span>,</span></div>
-      <div>&nbsp;&nbsp;<span>baz</span><span>:</span>&nbsp;<span>true</span><span>,</span></div>
-      <div>&nbsp;&nbsp;<span>qux</span><span>:</span>&nbsp;<span>10</span></div>
-      <div><span>}</span></div>
+      <div>{</div>
+      <div>&nbsp;&nbsp;foo:&nbsp;<span>&quot;bar&quot;</span>,</div>
+      <div>&nbsp;&nbsp;baz:&nbsp;<span>true</span>,</div>
+      <div>&nbsp;&nbsp;qux:&nbsp;<span>10</span></div>
+      <div>}</div>
     `))
   })
 
@@ -134,10 +134,10 @@ describe('objects', () => {
       'needs-quotes': true
     }
     expect(htmlLog(object)).to.equal(oneLine(`
-      <div><span>{</span></div>
-      <div>&nbsp;&nbsp;<span>foo</span><span>:</span>&nbsp;<span>&quot;bar&quot;</span><span>,</span></div>
-      <div>&nbsp;&nbsp;<span>&quot;needs-quotes&quot;</span><span>:</span>&nbsp;<span>true</span></div>
-      <div><span>}</span></div>
+      <div>{</div>
+      <div>&nbsp;&nbsp;foo:&nbsp;<span>&quot;bar&quot;</span>,</div>
+      <div>&nbsp;&nbsp;<span>&quot;needs-quotes&quot;</span>:&nbsp;<span>true</span></div>
+      <div>}</div>
     `))
   })
 

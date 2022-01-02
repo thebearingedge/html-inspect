@@ -2,7 +2,7 @@ const NBSP = '&nbsp;'
 const VALID_KEY = /^[a-z_$]+[a-z0-9$_]*$/i
 
 function printLine(tokens: string, indent: number = 0, comma: boolean = false): string {
-  return `<div>${NBSP.repeat(indent)}${tokens}${comma ? '<span>,</span>' : ''}</div>`
+  return `<div>${NBSP.repeat(indent)}${tokens}${comma ? ',' : ''}</div>`
 }
 
 function printLeaf(value: any): string {
@@ -16,10 +16,10 @@ function printLeaf(value: any): string {
     return `<span>&quot;${value}&quot;</span>`
   }
   if (Array.isArray(value)) {
-    return '<span>[]</span>'
+    return '[]'
   }
   if (typeof value === 'object' && value != null) {
-    return '<span>{}</span>'
+    return '{}'
   }
   if (typeof value === 'bigint') {
     return `<span>${String(value)}n</span>`
@@ -33,16 +33,16 @@ export default function htmlLog(value: any): string {
   }
   if (Array.isArray(value)) {
     return [
-      printLine('<span>[</span>'),
+      printLine('['),
       printArrayElements(value, 2),
-      printLine('<span>]</span>')
+      printLine(']')
     ].join('')
   }
   const keys = Object.keys(value)
   return [
-    printLine('<span>{</span>'),
+    printLine('{'),
     printObjectProperties(keys, value, 2),
-    printLine('<span>}</span>')
+    printLine('}')
   ].join('')
 }
 
@@ -104,12 +104,14 @@ function printObjectProperties<T>(keys: Array<keyof T>, obj: T, indent: number):
 }
 
 function printPropertyKey(key: string): string {
-  return `<span>${VALID_KEY.test(key) ? key : `&quot;${key}&quot;`}</span>`
+  return VALID_KEY.test(key)
+    ? key
+    : `<span>&quot;${key}&quot;</span>`
 }
 
 function printProperty<T>(key: keyof T, object: T): string {
   if (isLeaf(object[key])) {
-    return `${printPropertyKey(String(key))}<span>:</span>&nbsp;${printLeaf(object[key])}`
+    return `${printPropertyKey(String(key))}:&nbsp;${printLeaf(object[key])}`
   }
   return ''
 }
