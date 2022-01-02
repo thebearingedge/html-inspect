@@ -1,4 +1,4 @@
-const VALID_KEY = /^[a-z_$]+[a-z0-9$_]*$/i
+const VALID_PROPERTY_KEY = /^[a-z_$]+[a-z0-9$_]*$/i
 
 export default function htmlLog(value: any): string {
   if (isArray(value)) return printArray(value)
@@ -148,7 +148,7 @@ function printObject(
 }
 
 function printPropertyKey(key: string): string {
-  return VALID_KEY.test(key)
+  return VALID_PROPERTY_KEY.test(key)
     ? key
     : `<span class="string">&quot;${key}&quot;</span>`
 }
