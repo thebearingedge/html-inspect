@@ -18,6 +18,7 @@ function printArray(
   if (array.length === 0) {
     return printLine('[]', indent, comma)
   }
+  refs.set(array, [refs.size + 1, 0])
   const lines = [
     typeof key === 'string'
       ? printLine(`${printPropertyKey(key)}: [`, indent)
@@ -37,6 +38,16 @@ function printArray(
       ))
     }
     if (index >= array.length) break
+    const value = array[index]
+    const ref = refs.get(value)
+    if (typeof ref !== 'undefined') {
+      ref[1]++
+      lines.push(printLine(
+        `<span>[Circular *${ref[0]}]</span>`,
+        indent + 2,
+        index < array.length - 1
+      ))
+    } else
     if (isArray(array[index])) {
       lines.push(printArray(
         array[index],
@@ -58,6 +69,12 @@ function printArray(
         index < array.length - 1
       ))
     }
+  }
+  const [id, count] = refs.get(array)!
+  if (count > 0) {
+    lines[0] = typeof key === 'string'
+      ? printLine(`<span>&lt;ref *${id}&gt;</span> ${printPropertyKey(key)}: [`, indent)
+      : printLine(`<span>&lt;ref *${id}&gt;</span> [`, indent)
   }
   lines.push(printLine(']', indent, comma))
   return lines.join('')

@@ -145,7 +145,22 @@ describe('arrays', () => {
     `))
   })
 
-  it('prints circular references')
+  it('prints circular references', () => {
+    const array: any[] = [
+      ['foo', null, true]
+    ]
+    array[1] = array
+    expect(htmlLog(array)).to.equal(oneLine(`
+      <div><span>&lt;ref *1&gt;</span> [</div>
+      <div>  [</div>
+      <div>    <span>&quot;foo&quot;</span>,</div>
+      <div>    <span>null</span>,</div>
+      <div>    <span>true</span></div>
+      <div>  ],</div>
+      <div>  <span>[Circular *1]</span></div>
+      <div>]</div>
+    `))
+  })
 
 })
 
