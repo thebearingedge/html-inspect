@@ -149,8 +149,8 @@ function printObject(
 
 function printPropertyKey(key: string): string {
   return VALID_PROPERTY_KEY.test(key)
-    ? key
-    : `<span class="string">&quot;${key}&quot;</span>`
+    ? escape(key)
+    : `<span class="string">&quot;${escape(key)}&quot;</span>`
 }
 
 function printLeaf(value: any): string {
@@ -158,31 +158,31 @@ function printLeaf(value: any): string {
     const name = typeof value.name === 'string' && value.name !== ''
       ? value.name
       : '(anonymous)'
-    return `<span class="function">[Function ${name}]</span>`
+    return `<span class="function">[Function ${escape(name)}]</span>`
   }
   switch (typeof value) {
     case 'string':
-      return `<span class="string">&quot;${value}&quot;</span>`
+      return `<span class="string">&quot;${escape(value)}&quot;</span>`
     case 'number':
-      return `<span class="number">${String(value)}</span>`
+      return `<span class="number">${escape(value)}</span>`
     case 'boolean':
-      return `<span class="boolean">${String(value)}</span>`
+      return `<span class="boolean">${escape(value)}</span>`
     case 'object':
-      return `<span class="null">${String(value)}</span>`
+      return `<span class="null">${escape(value)}</span>`
     case 'undefined':
-      return `<span class="undefined">${String(value)}</span>`
+      return `<span class="undefined">${escape(value)}</span>`
     case 'bigint':
-      return `<span class="number">${String(value)}n</span>`
+      return `<span class="number">${escape(value)}n</span>`
     case 'symbol':
-      return `<span class="symbol">${String(value)}</span>`
+      return `<span class="symbol">${escape(value)}</span>`
     /* c8 ignore next 2 */
     default:
-      return `<span>${String(value)}</span>`
+      throw new Error('unhandled type')
   }
 }
 
-function printLine(tokens: string, indent: number = 0, comma: boolean = false): string {
-  return `<div>${' '.repeat(indent)}${tokens}${comma ? ',' : ''}</div>`
+function printLine(fragment: string, indent: number = 0, comma: boolean = false): string {
+  return `<div>${' '.repeat(indent)}${fragment}${comma ? ',' : ''}</div>`
 }
 
 function isArray(value: any): value is any[] {
@@ -195,4 +195,19 @@ function isObject(value: any): value is { [key: string]: any } {
 
 function hasOwnProperty(obj: object, property: string | number): boolean {
   return Object.prototype.hasOwnProperty.call(obj, property)
+}
+
+const AMPERSANDS = /&/g
+const LESS_THANS = /</g
+const GREATER_THANS = />/g
+const DOUBLE_QUOTES = /"/g
+const SINGLE_QUOTES = /'/g
+
+function escape(value: any): string {
+  return String(value)
+    .replace(AMPERSANDS, '&amp;')
+    .replace(LESS_THANS, '&lt;')
+    .replace(GREATER_THANS, '&gt;')
+    .replace(DOUBLE_QUOTES, '&quot;')
+    .replace(SINGLE_QUOTES, '&apos;')
 }
