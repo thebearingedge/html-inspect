@@ -1,8 +1,7 @@
-const NBSP = '&nbsp;'
 const VALID_KEY = /^[a-z_$]+[a-z0-9$_]*$/i
 
 function printLine(tokens: string, indent: number = 0, comma: boolean = false): string {
-  return `<div>${NBSP.repeat(indent)}${tokens}${comma ? ',' : ''}</div>`
+  return `<div>${' '.repeat(indent)}${tokens}${comma ? ',' : ''}</div>`
 }
 
 function printLeaf(value: any): string {
