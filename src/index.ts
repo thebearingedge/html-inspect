@@ -83,7 +83,7 @@ function printArray(
 }
 
 function printObject(
-  object: {[key: string]: any },
+  object: { [key: string]: any },
   refs: Refs = new Map(),
   indent: number = 0,
   comma: boolean = false,
