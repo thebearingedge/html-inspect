@@ -89,6 +89,48 @@ describe('arrays', () => {
     `))
   })
 
+  it('prints nested objects', () => {
+    const array = [
+      {
+        foo: 'bar'
+      },
+      {
+        foo: 'bar'
+      }
+    ]
+    expect(htmlLog(array)).to.equal(oneLine(`
+      <div>[</div>
+      <div>  {</div>
+      <div>    foo: <span>&quot;bar&quot;</span></div>
+      <div>  },</div>
+      <div>  {</div>
+      <div>    foo: <span>&quot;bar&quot;</span></div>
+      <div>  }</div>
+      <div>]</div>
+    `))
+  })
+
+  it('prints nested arrays', () => {
+    const array = [
+      ['foo', null, true],
+      ['foo', null, true]
+    ]
+    expect(htmlLog(array)).to.equal(oneLine(`
+      <div>[</div>
+      <div>  [</div>
+      <div>    <span>&quot;foo&quot;</span>,</div>
+      <div>    <span>null</span>,</div>
+      <div>    <span>true</span></div>
+      <div>  ],</div>
+      <div>  [</div>
+      <div>    <span>&quot;foo&quot;</span>,</div>
+      <div>    <span>null</span>,</div>
+      <div>    <span>true</span></div>
+      <div>  ]</div>
+      <div>]</div>
+    `))
+  })
+
   it('prints sparse arrays', () => {
     // eslint-disable-next-line no-sparse-arrays
     expect(htmlLog(['foo', , , 'bar', , , , 'baz', ,])).to.equal(oneLine(`
@@ -184,10 +226,6 @@ describe('objects', () => {
       <div>}</div>
     `))
   })
-
-  it('prints instances of classes')
-
-  it('prints leaf element class index properties')
 
 })
 

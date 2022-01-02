@@ -29,7 +29,19 @@ function printArray(array: any[], indent: number = 0, comma: boolean = false, ke
       ))
     }
     if (index >= array.length) break
-    if (!isArray(array[index]) && !isObject(array[index])) {
+    if (isArray(array[index])) {
+      lines.push(printArray(
+        array[index],
+        indent + 2,
+        index < array.length - 1
+      ))
+    } else if (isObject(array[index])) {
+      lines.push(printObject(
+        array[index],
+        indent + 2,
+        index < array.length - 1
+      ))
+    } else {
       lines.push(printLine(
         printLeaf(array[index]),
         indent + 2,
