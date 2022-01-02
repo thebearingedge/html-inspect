@@ -6,11 +6,11 @@ export default function htmlLog(value: any): string {
   return printLine(printLeaf(value))
 }
 
-type RefCounts = Map<any, [number, number]>
+type Refs = Map<any, [number, number]>
 
 function printArray(
   array: any[],
-  refs: RefCounts = new Map(),
+  refs: Refs = new Map(),
   indent: number = 0,
   comma: boolean = false,
   key?: string
@@ -19,11 +19,7 @@ function printArray(
     return printLine('[]', indent, comma)
   }
   refs.set(array, [refs.size + 1, 0])
-  const lines = [
-    typeof key === 'string'
-      ? printLine(`${printPropertyKey(key)}: [`, indent)
-      : printLine('[', indent)
-  ]
+  const lines = ['']
   for (let index = 0; index < array.length; index++) {
     let empty = 0
     while (!hasOwnProperty(array, index) && index < array.length) {
@@ -48,41 +44,43 @@ function printArray(
         index < array.length - 1
       ))
     } else
-    if (isArray(array[index])) {
+    if (isArray(value)) {
       lines.push(printArray(
-        array[index],
+        value,
         refs,
         indent + 2,
         index < array.length - 1
       ))
-    } else if (isObject(array[index])) {
+    } else if (isObject(value)) {
       lines.push(printObject(
-        array[index],
+        value,
         refs,
         indent + 2,
         index < array.length - 1
       ))
     } else {
       lines.push(printLine(
-        printLeaf(array[index]),
+        printLeaf(value),
         indent + 2,
         index < array.length - 1
       ))
     }
   }
+  const propertyKey = typeof key === 'string'
+    ? `${printPropertyKey(key)}: `
+    : ''
   const [id, count] = refs.get(array)!
-  if (count > 0) {
-    lines[0] = typeof key === 'string'
-      ? printLine(`<span>&lt;ref *${id}&gt;</span> ${printPropertyKey(key)}: [`, indent)
-      : printLine(`<span>&lt;ref *${id}&gt;</span> [`, indent)
-  }
+  const ref = count > 0
+    ? `<span>&lt;ref *${id}&gt;</span> `
+    : ''
+  lines[0] = printLine(`${propertyKey}${ref}[`, indent)
   lines.push(printLine(']', indent, comma))
   return lines.join('')
 }
 
 function printObject(
   object: {[key: string]: any },
-  refs: RefCounts = new Map(),
+  refs: Refs = new Map(),
   indent: number = 0,
   comma: boolean = false,
   key?: string
@@ -92,11 +90,7 @@ function printObject(
     return printLine('{}', indent, comma)
   }
   refs.set(object, [refs.size + 1, 0])
-  const lines = [
-    typeof key === 'string'
-      ? printLine(`${printPropertyKey(key)}: {`, indent)
-      : printLine('{', indent)
-  ]
+  const lines = ['']
   for (let index = 0; index < keys.length; index++) {
     const value = object[keys[index]]
     const ref = refs.get(value)
@@ -131,12 +125,14 @@ function printObject(
       ))
     }
   }
+  const propertyKey = typeof key === 'string'
+    ? `${printPropertyKey(key)}: `
+    : ''
   const [id, count] = refs.get(object)!
-  if (count > 0) {
-    lines[0] = typeof key === 'string'
-      ? printLine(`<span>&lt;ref *${id}&gt;</span> ${printPropertyKey(key)}: {`, indent)
-      : printLine(`<span>&lt;ref *${id}&gt;</span> {`, indent)
-  }
+  const ref = count > 0
+    ? `<span>&lt;ref *${id}&gt;</span> `
+    : ''
+  lines[0] = printLine(`${propertyKey}${ref}{`, indent)
   lines.push(printLine('}', indent, comma))
   return lines.join('')
 }
