@@ -121,9 +121,9 @@ describe('objects', () => {
     }
     expect(htmlLog(object)).to.equal(oneLine(`
       <div>{</div>
-      <div>  foo:&nbsp;<span>&quot;bar&quot;</span>,</div>
-      <div>  baz:&nbsp;<span>true</span>,</div>
-      <div>  qux:&nbsp;<span>10</span></div>
+      <div>  foo: <span>&quot;bar&quot;</span>,</div>
+      <div>  baz: <span>true</span>,</div>
+      <div>  qux: <span>10</span></div>
       <div>}</div>
     `))
   })
@@ -135,8 +135,8 @@ describe('objects', () => {
     }
     expect(htmlLog(object)).to.equal(oneLine(`
       <div>{</div>
-      <div>  foo:&nbsp;<span>&quot;bar&quot;</span>,</div>
-      <div>  <span>&quot;needs-quotes&quot;</span>:&nbsp;<span>true</span></div>
+      <div>  foo: <span>&quot;bar&quot;</span>,</div>
+      <div>  <span>&quot;needs-quotes&quot;</span>: <span>true</span></div>
       <div>}</div>
     `))
   })

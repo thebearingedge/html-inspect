@@ -14,12 +14,6 @@ function printLeaf(value: any): string {
   if (typeof value === 'string') {
     return `<span>&quot;${value}&quot;</span>`
   }
-  if (Array.isArray(value)) {
-    return '[]'
-  }
-  if (typeof value === 'object' && value != null) {
-    return '{}'
-  }
   if (typeof value === 'bigint') {
     return `<span>${String(value)}n</span>`
   }
@@ -27,22 +21,9 @@ function printLeaf(value: any): string {
 }
 
 export default function htmlLog(value: any): string {
-  if (isLeaf(value)) {
-    return printLine(printLeaf(value))
-  }
-  if (Array.isArray(value)) {
-    return [
-      printLine('['),
-      printArrayElements(value, 2),
-      printLine(']')
-    ].join('')
-  }
-  const keys = Object.keys(value)
-  return [
-    printLine('{'),
-    printObjectProperties(keys, value, 2),
-    printLine('}')
-  ].join('')
+  if (isArray(value)) return printArray(value)
+  if (isObject(value)) return printObject(value)
+  return printLine(printLeaf(value))
 }
 
 const objectHasOwn = Object.prototype.hasOwnProperty
@@ -51,20 +32,15 @@ function hasOwnProperty(obj: object, property: string | number): boolean {
   return objectHasOwn.call(obj, property)
 }
 
-function isLeaf(value: any): boolean {
-  return typeof value === 'string' ||
-         typeof value === 'number' ||
-         typeof value === 'boolean' ||
-         value == null ||
-         (Array.isArray(value) && value.length === 0) ||
-         (typeof value === 'object' && Object.keys(value).length === 0) ||
-         typeof value === 'function' ||
-         typeof value === 'symbol' ||
-         typeof value === 'bigint'
-}
-
-function printArrayElements(array: any[], indent: number): string {
-  const lines = []
+function printArray(array: any[], indent: number = 0, comma: boolean = false, key?: string): string {
+  if (array.length === 0) {
+    return printLine('[]', indent, comma)
+  }
+  const lines = [
+    typeof key === 'string'
+      ? printLine(`${printPropertyKey(key)}: [`, indent)
+      : printLine('[', indent)
+  ]
   for (let index = 0; index < array.length; index++) {
     let empty = 0
     while (!hasOwnProperty(array, index) && index < array.length) {
@@ -74,31 +50,41 @@ function printArrayElements(array: any[], indent: number): string {
     if (empty > 0) {
       lines.push(printLine(
         `<span>empty &times; ${empty}</span>`,
-        indent,
+        indent + 2,
         index < array.length - 1
       ))
     }
     if (index >= array.length) break
-    if (isLeaf(array[index])) {
+    if (!isArray(array[index]) && !isObject(array[index])) {
       lines.push(printLine(
         printLeaf(array[index]),
-        indent,
+        indent + 2,
         index < array.length - 1
       ))
     }
   }
+  lines.push(printLine(']', indent, comma))
   return lines.join('')
 }
 
-function printObjectProperties<T>(keys: Array<keyof T>, obj: T, indent: number): string {
-  const lines = []
+function printObject(object: {[key: string]: any }, indent: number = 0, comma: boolean = false, key?: string): string {
+  const keys = Object.keys(object)
+  if (keys.length === 0) {
+    return printLine('{}', indent, comma)
+  }
+  const lines = [
+    typeof key === 'string'
+      ? printLine(`${printPropertyKey(key)}: {`, indent)
+      : printLine('{', indent)
+  ]
   for (let index = 0; index < keys.length; index++) {
     lines.push(printLine(
-      printProperty(keys[index], obj),
-      indent,
+      printProperty(keys[index], object),
+      indent + 2,
       index < keys.length - 1
     ))
   }
+  lines.push(printLine('}', indent, comma))
   return lines.join('')
 }
 
@@ -109,8 +95,13 @@ function printPropertyKey(key: string): string {
 }
 
 function printProperty<T>(key: keyof T, object: T): string {
-  if (isLeaf(object[key])) {
-    return `${printPropertyKey(String(key))}:&nbsp;${printLeaf(object[key])}`
-  }
-  return ''
+  return `${printPropertyKey(String(key))}: ${printLeaf(object[key])}`
+}
+
+function isArray(value: any): value is any[] {
+  return Array.isArray(value)
+}
+
+function isObject(value: any): value is { [key: string]: any } {
+  return typeof value === 'object' && value !== null
 }
