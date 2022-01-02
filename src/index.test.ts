@@ -136,11 +136,11 @@ describe('arrays', () => {
     expect(htmlLog(['foo', , , 'bar', , , , 'baz', ,])).to.equal(oneLine(`
       <div>[</div>
       <div>  <span class="string">&quot;foo&quot;</span>,</div>
-      <div>  <span>empty &times; 2</span>,</div>
+      <div>  <span class="empty">empty &times; 2</span>,</div>
       <div>  <span class="string">&quot;bar&quot;</span>,</div>
-      <div>  <span>empty &times; 3</span>,</div>
+      <div>  <span class="empty">empty &times; 3</span>,</div>
       <div>  <span class="string">&quot;baz&quot;</span>,</div>
-      <div>  <span>empty &times; 1</span></div>
+      <div>  <span class="empty">empty &times; 1</span></div>
       <div>]</div>
     `))
   })

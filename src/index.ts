@@ -33,7 +33,7 @@ function printArray(
     }
     if (empty > 0) {
       lines.push(printLine(
-        `<span>empty &times; ${empty}</span>`,
+        `<span class="empty">empty &times; ${empty}</span>`,
         indent + 2,
         index < array.length - 1
       ))
