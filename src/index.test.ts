@@ -261,5 +261,5 @@ describe('objects', () => {
 })
 
 function oneLine(string: string): string {
-  return string.split('\n').map(s => s.trim()).filter(Boolean).join('')
+  return string.split('\n').map(s => s.trim()).join('')
 }
