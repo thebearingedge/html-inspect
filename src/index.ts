@@ -1,35 +1,9 @@
 const VALID_KEY = /^[a-z_$]+[a-z0-9$_]*$/i
 
-function printLine(tokens: string, indent: number = 0, comma: boolean = false): string {
-  return `<div>${' '.repeat(indent)}${tokens}${comma ? ',' : ''}</div>`
-}
-
-function printLeaf(value: any): string {
-  if (typeof value === 'function') {
-    const name = typeof value.name === 'string' && value.name !== ''
-      ? value.name
-      : '(anonymous)'
-    return `<span>[Function ${name}]</span>`
-  }
-  if (typeof value === 'string') {
-    return `<span>&quot;${value}&quot;</span>`
-  }
-  if (typeof value === 'bigint') {
-    return `<span>${String(value)}n</span>`
-  }
-  return `<span>${String(value)}</span>`
-}
-
 export default function htmlLog(value: any): string {
   if (isArray(value)) return printArray(value)
   if (isObject(value)) return printObject(value)
   return printLine(printLeaf(value))
-}
-
-const objectHasOwn = Object.prototype.hasOwnProperty
-
-function hasOwnProperty(obj: object, property: string | number): boolean {
-  return objectHasOwn.call(obj, property)
 }
 
 function printArray(array: any[], indent: number = 0, comma: boolean = false, key?: string): string {
@@ -103,10 +77,34 @@ function printPropertyKey(key: string): string {
     : `<span>&quot;${key}&quot;</span>`
 }
 
+function printLeaf(value: any): string {
+  if (typeof value === 'function') {
+    const name = typeof value.name === 'string' && value.name !== ''
+      ? value.name
+      : '(anonymous)'
+    return `<span>[Function ${name}]</span>`
+  }
+  if (typeof value === 'string') {
+    return `<span>&quot;${value}&quot;</span>`
+  }
+  if (typeof value === 'bigint') {
+    return `<span>${String(value)}n</span>`
+  }
+  return `<span>${String(value)}</span>`
+}
+
+function printLine(tokens: string, indent: number = 0, comma: boolean = false): string {
+  return `<div>${' '.repeat(indent)}${tokens}${comma ? ',' : ''}</div>`
+}
+
 function isArray(value: any): value is any[] {
   return Array.isArray(value)
 }
 
 function isObject(value: any): value is { [key: string]: any } {
   return typeof value === 'object' && value !== null
+}
+
+function hasOwnProperty(obj: object, property: string | number): boolean {
+  return Object.prototype.hasOwnProperty.call(obj, property)
 }
