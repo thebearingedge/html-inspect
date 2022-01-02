@@ -38,7 +38,7 @@ function printArray(
         index < array.length - 1
       ))
     }
-    if (index >= array.length) break
+    if (index === array.length) break
     const value = array[index]
     const ref = refs.get(value)
     if (typeof ref !== 'undefined') {
