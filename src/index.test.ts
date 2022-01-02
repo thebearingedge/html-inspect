@@ -162,7 +162,28 @@ describe('objects', () => {
     `))
   })
 
-  it('prints array properties')
+  it('prints nested arrays', () => {
+    const object = {
+      baz: [
+        42,
+        null,
+        false
+      ],
+      foo: 'bar',
+      'needs-quotes': true
+    }
+    expect(htmlLog(object)).to.equal(oneLine(`
+      <div>{</div>
+      <div>  baz: [</div>
+      <div>    <span>42</span>,</div>
+      <div>    <span>null</span>,</div>
+      <div>    <span>false</span></div>
+      <div>  ],</div>
+      <div>  foo: <span>&quot;bar&quot;</span>,</div>
+      <div>  <span>&quot;needs-quotes&quot;</span>: <span>true</span></div>
+      <div>}</div>
+    `))
+  })
 
   it('prints instances of classes')
 

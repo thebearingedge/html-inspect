@@ -52,7 +52,14 @@ function printObject(object: {[key: string]: any }, indent: number = 0, comma: b
       : printLine('{', indent)
   ]
   for (let index = 0; index < keys.length; index++) {
-    if (isObject(object[keys[index]])) {
+    if (isArray(object[keys[index]])) {
+      lines.push(printArray(
+        object[keys[index]],
+        indent + 2,
+        index < keys.length - 1,
+        keys[index]
+      ))
+    } else if (isObject(object[keys[index]])) {
       lines.push(printObject(
         object[keys[index]],
         indent + 2,
