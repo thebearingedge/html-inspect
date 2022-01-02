@@ -129,7 +129,7 @@ function printObject(
       ))
     } else {
       lines.push(printLine(
-        `${printPropertyKey(key)}: ${printLeaf(object[key])}`,
+        `${printPropertyKey(key)}: ${printLeaf(value)}`,
         indent + 2,
         index < keys.length - 1
       ))
