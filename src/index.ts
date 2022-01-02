@@ -6,7 +6,7 @@ export default function htmlLog(value: any): string {
   return printLine(printLeaf(value))
 }
 
-type Refs = Map<any, [number, number]>
+type Refs = Map<any, [number, boolean]>
 
 function printArray(
   array: any[],
@@ -20,10 +20,10 @@ function printArray(
   }
   refs.set(array, [
     refs.size + 1, // unique id for this array
-    0 // number of additional references counted
+    false // whether or not a circular reference was encountered
   ])
   const lines = [
-    '' // placeholder until we have a reference count
+    '' // placeholder until we know of any circular references
   ]
   for (let index = 0; index < array.length; index++) {
     let empty = 0
@@ -42,7 +42,7 @@ function printArray(
     const value = array[index]
     const ref = refs.get(value)
     if (typeof ref !== 'undefined') {
-      ref[1]++
+      ref[1] = true
       lines.push(printLine(
         `<span class="reference">[Circular *${ref[0]}]</span>`,
         indent + 2,
@@ -73,8 +73,8 @@ function printArray(
   const propertyKey = typeof key === 'string'
     ? `${printPropertyKey(key)}: `
     : ''
-  const [id, count] = refs.get(array)!
-  const ref = count > 0
+  const [id, isCircular] = refs.get(array)!
+  const ref = isCircular
     ? `<span class="reference">&lt;ref *${id}&gt;</span> `
     : ''
   lines[0] = printLine(`${propertyKey}${ref}[`, indent)
@@ -95,17 +95,17 @@ function printObject(
   }
   refs.set(object, [
     refs.size + 1, // unique id for this object
-    0 // number of additional references counted
+    false // whether or not a circular reference was encountered
   ])
   const lines = [
-    '' // placeholder until we have a reference count
+    '' // placeholder until we know of any circular references
   ]
   for (let index = 0; index < keys.length; index++) {
     const key = keys[index]
     const value = object[key]
     const ref = refs.get(value)
     if (typeof ref !== 'undefined') {
-      ref[1]++
+      ref[1] = true
       lines.push(printLine(
         `${printPropertyKey(key)}: <span class="reference">[Circular *${ref[0]}]</span>`,
         indent + 2,
@@ -138,8 +138,8 @@ function printObject(
   const propertyKey = typeof key === 'string'
     ? `${printPropertyKey(key)}: `
     : ''
-  const [id, count] = refs.get(object)!
-  const ref = count > 0
+  const [id, isCircular] = refs.get(object)!
+  const ref = isCircular
     ? `<span class="reference">&lt;ref *${id}&gt;</span> `
     : ''
   lines[0] = printLine(`${propertyKey}${ref}{`, indent)
