@@ -18,8 +18,13 @@ function printArray(
   if (array.length === 0) {
     return printLine('[]', indent, comma)
   }
-  refs.set(array, [refs.size + 1, 0])
-  const lines = ['']
+  refs.set(array, [
+    refs.size + 1, // unique id for this array
+    0 // number of additional references counted
+  ])
+  const lines = [
+    '' // placeholder until we have a reference count
+  ]
   for (let index = 0; index < array.length; index++) {
     let empty = 0
     while (!hasOwnProperty(array, index) && index < array.length) {
@@ -43,8 +48,7 @@ function printArray(
         indent + 2,
         index < array.length - 1
       ))
-    } else
-    if (isArray(value)) {
+    } else if (isArray(value)) {
       lines.push(printArray(
         value,
         refs,
@@ -89,15 +93,21 @@ function printObject(
   if (keys.length === 0) {
     return printLine('{}', indent, comma)
   }
-  refs.set(object, [refs.size + 1, 0])
-  const lines = ['']
+  refs.set(object, [
+    refs.size + 1, // unique id for this object
+    0 // number of additional references counted
+  ])
+  const lines = [
+    '' // placeholder until we have a reference count
+  ]
   for (let index = 0; index < keys.length; index++) {
-    const value = object[keys[index]]
+    const key = keys[index]
+    const value = object[key]
     const ref = refs.get(value)
     if (typeof ref !== 'undefined') {
       ref[1]++
       lines.push(printLine(
-        `${printPropertyKey(String(keys[index]))}: <span>[Circular *${ref[0]}]</span>`,
+        `${printPropertyKey(key)}: <span>[Circular *${ref[0]}]</span>`,
         indent + 2,
         index < keys.length - 1
       ))
@@ -107,7 +117,7 @@ function printObject(
         refs,
         indent + 2,
         index < keys.length - 1,
-        keys[index]
+        key
       ))
     } else if (isObject(value)) {
       lines.push(printObject(
@@ -115,11 +125,11 @@ function printObject(
         refs,
         indent + 2,
         index < keys.length - 1,
-        keys[index]
+        key
       ))
     } else {
       lines.push(printLine(
-        `${printPropertyKey(String(keys[index]))}: ${printLeaf(object[keys[index]])}`,
+        `${printPropertyKey(key)}: ${printLeaf(object[key])}`,
         indent + 2,
         index < keys.length - 1
       ))
