@@ -167,21 +167,12 @@ function printLeaf(value: any): string {
   switch (typeof value) {
     case 'string':
       return `<span class="string">&quot;${escape(value)}&quot;</span>`
-    case 'number':
-      return `<span class="number">${escape(value)}</span>`
-    case 'boolean':
-      return `<span class="boolean">${escape(value)}</span>`
     case 'object':
       return `<span class="null">${escape(value)}</span>`
-    case 'undefined':
-      return `<span class="undefined">${escape(value)}</span>`
     case 'bigint':
       return `<span class="number">${escape(value)}n</span>`
-    case 'symbol':
-      return `<span class="symbol">${escape(value)}</span>`
-    /* c8 ignore next 2 */
     default:
-      throw new Error('unhandled type')
+      return `<span class="${typeof value}">${escape(value)}</span>`
   }
 }
 
