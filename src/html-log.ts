@@ -188,8 +188,8 @@ function isObject(value: any): value is { [key: string]: any } {
   return typeof value === 'object' && value !== null
 }
 
-function hasOwnProperty(obj: object, property: string | number): boolean {
-  return Object.prototype.hasOwnProperty.call(obj, property)
+function hasOwnProperty(object: object, property: string | number): boolean {
+  return Object.prototype.hasOwnProperty.call(object, property)
 }
 
 const AMPERSANDS = /&/g
