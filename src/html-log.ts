@@ -1,5 +1,3 @@
-const VALID_PROPERTY_KEY = /^[a-z_$]+[a-z0-9$_]*$/i
-
 export default function htmlLog(value: any): string {
   if (isArray(value)) return printArray(value)
   if (isObject(value)) return printObject(value)
@@ -40,28 +38,30 @@ function printArray(
     }
     if (index === array.length) break
     const value = array[index]
-    const ref = refs.get(value)
-    if (typeof ref !== 'undefined') {
-      ref[1] = true
-      lines.push(printLine(
-        `<span class="reference">[Circular *${ref[0]}]</span>`,
-        indent + 2,
-        index < array.length - 1
-      ))
-    } else if (isArray(value)) {
-      lines.push(printArray(
-        value,
-        refs,
-        indent + 2,
-        index < array.length - 1
-      ))
-    } else if (isObject(value)) {
-      lines.push(printObject(
-        value,
-        refs,
-        indent + 2,
-        index < array.length - 1
-      ))
+    if (isArray(value) || isObject(value)) {
+      const ref = refs.get(value)
+      if (typeof ref !== 'undefined') {
+        ref[1] = true
+        lines.push(printLine(
+          `<span class="reference">[Circular *${ref[0]}]</span>`,
+          indent + 2,
+          index < array.length - 1
+        ))
+      } else if (isArray(value)) {
+        lines.push(printArray(
+          value,
+          refs,
+          indent + 2,
+          index < array.length - 1
+        ))
+      } else {
+        lines.push(printObject(
+          value,
+          refs,
+          indent + 2,
+          index < array.length - 1
+        ))
+      }
     } else {
       lines.push(printLine(
         printLeaf(value),
@@ -103,30 +103,32 @@ function printObject(
   for (let index = 0; index < keys.length; index++) {
     const key = keys[index]
     const value = object[key]
-    const ref = refs.get(value)
-    if (typeof ref !== 'undefined') {
-      ref[1] = true
-      lines.push(printLine(
-        `${printPropertyKey(key)}: <span class="reference">[Circular *${ref[0]}]</span>`,
-        indent + 2,
-        index < keys.length - 1
-      ))
-    } else if (isArray(value)) {
-      lines.push(printArray(
-        value,
-        refs,
-        indent + 2,
-        index < keys.length - 1,
-        key
-      ))
-    } else if (isObject(value)) {
-      lines.push(printObject(
-        value,
-        refs,
-        indent + 2,
-        index < keys.length - 1,
-        key
-      ))
+    if (isArray(value) || isObject(value)) {
+      const ref = refs.get(value)
+      if (typeof ref !== 'undefined') {
+        ref[1] = true
+        lines.push(printLine(
+          `${printPropertyKey(key)}: <span class="reference">[Circular *${ref[0]}]</span>`,
+          indent + 2,
+          index < keys.length - 1
+        ))
+      } else if (isArray(value)) {
+        lines.push(printArray(
+          value,
+          refs,
+          indent + 2,
+          index < keys.length - 1,
+          key
+        ))
+      } else {
+        lines.push(printObject(
+          value,
+          refs,
+          indent + 2,
+          index < keys.length - 1,
+          key
+        ))
+      }
     } else {
       lines.push(printLine(
         `${printPropertyKey(key)}: ${printLeaf(value)}`,
@@ -146,6 +148,8 @@ function printObject(
   lines.push(printLine('}', indent, comma))
   return lines.join('')
 }
+
+const VALID_PROPERTY_KEY = /^[a-z_$]+[a-z0-9$_]*$/i
 
 function printPropertyKey(key: string): string {
   return VALID_PROPERTY_KEY.test(key)
