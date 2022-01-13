@@ -1,4 +1,4 @@
-export default function htmlLog(value: any): string {
+export function htmlLog(value: any): string {
   if (isArray(value)) return printArray(value)
   if (isObject(value)) return printObject(value)
   return printLine(printLeaf(value))

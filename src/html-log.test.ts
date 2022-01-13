@@ -1,5 +1,5 @@
 import { expect } from 'chai'
-import htmlLog from './html-log'
+import { htmlLog } from './html-log'
 
 describe('leaves', () => {
 
