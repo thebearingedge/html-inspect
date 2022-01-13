@@ -1,4 +1,6 @@
 import { expect } from 'chai'
+import { JSDOM } from 'jsdom'
+import { outdent } from 'outdent'
 import { htmlLog } from './html-log'
 
 describe('leaves', () => {
@@ -256,6 +258,32 @@ describe('objects', () => {
       <div>  bar: <span class="reference">[Circular *1]</span></div>
       <div>}</div>
     `))
+  })
+
+})
+
+describe('html', () => {
+
+  beforeEach(() => {
+    const { window: { document, HTMLElement } } = new JSDOM('', {
+      url: 'http://localhost'
+    })
+    Object.assign(global, { document, HTMLElement })
+  })
+
+  it('prints HTML elements', () => {
+
+    document.body.innerHTML = outdent`
+      <div>
+        <h1 class="hi">Hello, World!</h1>
+      </div>
+    `
+    const $div = document.querySelector('div')
+    expect(htmlLog($div)).to.equal(outdent`
+      &lt;div&gt;
+        &lt;h1 class=&quot;hi&quot;&gt;Hello, World!&lt;/h1&gt;
+      &lt;/div&gt;
+    `)
   })
 
 })

@@ -1,4 +1,8 @@
 export function htmlLog(value: any): string {
+  if (typeof HTMLElement !== 'undefined' &&
+      value instanceof HTMLElement) {
+    return escape(value.outerHTML)
+  }
   if (isArray(value)) return printArray(value)
   if (isObject(value)) return printObject(value)
   return printLine(printLeaf(value))
