@@ -11,6 +11,9 @@
     }
   },
   "types": "dist/html-log.d.ts",
+  "files": [
+    "dist/"
+  ],
   "scripts": {
     "lint": "eslint .",
     "watch": "tsc -w",
