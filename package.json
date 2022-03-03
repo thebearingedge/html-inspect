@@ -1,6 +1,6 @@
 {
   "name": "html-inspect",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Print JavaScript values as HTML",
   "main": "./dist/cjs/html-inspect.js",
   "module": "./dist/esm/html-inspect.js",
@@ -21,7 +21,7 @@
     "tdd": "mocha -w -R min",
     "cover": "c8 -r text -r html -r lcov mocha",
     "build": "rollup -c",
-    "prepack": "npm run build",
+    "prepack": "npm test && npm run build",
     "prepare": "husky install"
   },
   "keywords": [],
