@@ -1,6 +1,6 @@
 {
   "name": "html-inspect",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Print JavaScript values as HTML",
   "main": "./dist/cjs/html-inspect.js",
   "module": "./dist/esm/html-inspect.js",
@@ -20,7 +20,7 @@
     "test": "mocha",
     "tdd": "mocha -w -R min",
     "cover": "c8 -r text -r html -r lcov mocha",
-    "build": "./scripts/build.sh",
+    "build": "rollup -c",
     "prepack": "npm run build",
     "prepare": "husky install"
   },
@@ -28,6 +28,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@rollup/plugin-typescript": "^8.3.1",
     "@types/chai": "^4.3.0",
     "@types/jsdom": "^16.2.14",
     "@types/mocha": "^9.1.0",
@@ -40,6 +41,7 @@
     "lint-staged": "^12.3.4",
     "mocha": "^9.2.1",
     "outdent": "^0.8.0",
+    "rollup": "^2.69.0",
     "ts-node": "^10.6.0",
     "typescript": "^4.6.2"
   },

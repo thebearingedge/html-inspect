@@ -1,7 +1,7 @@
 import { expect } from 'chai'
 import { JSDOM } from 'jsdom'
 import { outdent } from 'outdent'
-import { inspect } from './html-inspect'
+import inspect from './html-inspect'
 
 describe('leaves', () => {
 
