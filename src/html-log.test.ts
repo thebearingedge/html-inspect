@@ -288,6 +288,32 @@ describe('html', () => {
 
 })
 
+describe('dates', () => {
+
+  it('prints date objects', () => {
+    const date = new Date()
+    expect(htmlLog(date)).to.equal(oneLine(`
+      <div>
+        <span class="date">${date}</span>
+      </div>
+    `))
+  })
+
+})
+
+describe('other objects', () => {
+
+  it("prints the object's name", () => {
+    const set = new Set()
+    expect(htmlLog(set)).to.equal(oneLine(`
+      <div>
+        <span class="object">Set {}</span>
+      </div>
+    `))
+  })
+
+})
+
 function oneLine(string: string): string {
   return string.split('\n').map(s => s.trim()).join('')
 }

@@ -168,11 +168,17 @@ function printLeaf(value: any): string {
       : '(anonymous)'
     return `<span class="function">[Function ${escape(name)}]</span>`
   }
+  if (value instanceof Date) {
+    return `<span class="date">${value}</span>`
+  }
+  if (value === null) {
+    return `<span class="null">${value}</span>`
+  }
   switch (typeof value) {
     case 'string':
       return `<span class="string">&quot;${escape(value)}&quot;</span>`
     case 'object':
-      return `<span class="null">${escape(value)}</span>`
+      return `<span class="object">${escape(getConstructorName(value))} {}</span>`
     case 'bigint':
       return `<span class="number">${escape(value)}n</span>`
     default:
@@ -189,11 +195,15 @@ function isArray(value: any): value is any[] {
 }
 
 function isObject(value: any): value is { [key: string]: any } {
-  return typeof value === 'object' && value !== null
+  return Object.prototype.toString.call(value) === '[object Object]'
 }
 
 function hasOwnProperty(object: object, property: string | number): boolean {
   return Object.prototype.hasOwnProperty.call(object, property)
+}
+
+function getConstructorName(object: object): string {
+  return Object.prototype.toString.call(object).match(/\[object (.+)\]/)![1]
 }
 
 const AMPERSANDS = /&/g
