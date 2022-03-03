@@ -1,11 +1,14 @@
-export default function inspect(value: any): string {
-  if (typeof HTMLElement !== 'undefined' &&
+export default function inspect(...values: any[]): string {
+  const html = values.map(value => {
+    if (typeof HTMLElement !== 'undefined' &&
       value instanceof HTMLElement) {
-    return escape(value.outerHTML)
-  }
-  if (isArray(value)) return printArray(value)
-  if (isObject(value)) return printObject(value)
-  return printLine(printLeaf(value))
+      return escape(value.outerHTML)
+    }
+    if (isArray(value)) return printArray(value)
+    if (isObject(value)) return printObject(value)
+    return printLeaf(value)
+  }).join(' ')
+  return `<div>${html}</div>`
 }
 
 type Refs = Map<any, [number, boolean]>
