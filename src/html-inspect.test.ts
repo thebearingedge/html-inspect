@@ -1,48 +1,48 @@
 import { expect } from 'chai'
 import { JSDOM } from 'jsdom'
 import { outdent } from 'outdent'
-import { htmlLog } from './html-log'
+import { inspect } from './html-inspect'
 
 describe('leaves', () => {
 
   it('prints strings', () => {
-    expect(htmlLog('hello')).to.equal(oneLine(`
+    expect(inspect('hello')).to.equal(oneLine(`
       <div><span class="string">&quot;hello&quot;</span></div>
     `))
   })
 
   it('prints bigints', () => {
-    expect(htmlLog(0n)).to.equal(oneLine(`
+    expect(inspect(0n)).to.equal(oneLine(`
       <div><span class="number">0n</span></div>
     `))
   })
 
   it('prints numbers', () => {
-    expect(htmlLog(NaN)).to.equal(oneLine(`
+    expect(inspect(NaN)).to.equal(oneLine(`
       <div><span class="number">NaN</span></div>
     `))
   })
 
   it('prints booleans', () => {
-    expect(htmlLog(true)).to.equal(oneLine(`
+    expect(inspect(true)).to.equal(oneLine(`
       <div><span class="boolean">true</span></div>
     `))
   })
 
   it('prints symbols', () => {
-    expect(htmlLog(Symbol.iterator)).to.equal(oneLine(`
+    expect(inspect(Symbol.iterator)).to.equal(oneLine(`
       <div><span class="symbol">Symbol(Symbol.iterator)</span></div>
     `))
   })
 
   it('prints null', () => {
-    expect(htmlLog(null)).to.equal(oneLine(`
+    expect(inspect(null)).to.equal(oneLine(`
       <div><span class="null">null</span></div>
     `))
   })
 
   it('prints undefined', () => {
-    expect(htmlLog(undefined)).to.equal(oneLine(`
+    expect(inspect(undefined)).to.equal(oneLine(`
       <div><span class="undefined">undefined</span></div>
     `))
   })
@@ -52,13 +52,13 @@ describe('leaves', () => {
 describe('functions', () => {
 
   it('prints anonymous functions', () => {
-    expect(htmlLog(function () {})).to.equal(oneLine(`
+    expect(inspect(function () {})).to.equal(oneLine(`
       <div><span class="function">[Function (anonymous)]</span></div>
     `))
   })
 
   it('prints named functions', () => {
-    expect(htmlLog(function foo() {})).to.equal(oneLine(`
+    expect(inspect(function foo() {})).to.equal(oneLine(`
       <div><span class="function">[Function foo]</span></div>
     `))
   })
@@ -68,13 +68,13 @@ describe('functions', () => {
 describe('arrays', () => {
 
   it('prints empty arrays', () => {
-    expect(htmlLog([])).to.equal(oneLine(`
+    expect(inspect([])).to.equal(oneLine(`
       <div>[]</div>
     `))
   })
 
   it('prints arrays containing one leaf element', () => {
-    expect(htmlLog(['foo'])).to.equal(oneLine(`
+    expect(inspect(['foo'])).to.equal(oneLine(`
       <div>[</div>
       <div>  <span class="string">&quot;foo&quot;</span></div>
       <div>]</div>
@@ -82,7 +82,7 @@ describe('arrays', () => {
   })
 
   it('prints arrays of multiple leaf elements', () => {
-    expect(htmlLog(['foo', null, true])).to.equal(oneLine(`
+    expect(inspect(['foo', null, true])).to.equal(oneLine(`
       <div>[</div>
       <div>  <span class="string">&quot;foo&quot;</span>,</div>
       <div>  <span class="null">null</span>,</div>
@@ -100,7 +100,7 @@ describe('arrays', () => {
         foo: 'bar'
       }
     ]
-    expect(htmlLog(array)).to.equal(oneLine(`
+    expect(inspect(array)).to.equal(oneLine(`
       <div>[</div>
       <div>  {</div>
       <div>    foo: <span class="string">&quot;bar&quot;</span></div>
@@ -117,7 +117,7 @@ describe('arrays', () => {
       ['foo', null, true],
       ['foo', null, true]
     ]
-    expect(htmlLog(array)).to.equal(oneLine(`
+    expect(inspect(array)).to.equal(oneLine(`
       <div>[</div>
       <div>  [</div>
       <div>    <span class="string">&quot;foo&quot;</span>,</div>
@@ -135,7 +135,7 @@ describe('arrays', () => {
 
   it('prints sparse arrays', () => {
     // eslint-disable-next-line no-sparse-arrays
-    expect(htmlLog(['foo', , , 'bar', , , , 'baz', ,])).to.equal(oneLine(`
+    expect(inspect(['foo', , , 'bar', , , , 'baz', ,])).to.equal(oneLine(`
       <div>[</div>
       <div>  <span class="string">&quot;foo&quot;</span>,</div>
       <div>  <span class="empty">empty &times; 2</span>,</div>
@@ -152,7 +152,7 @@ describe('arrays', () => {
       ['foo', null, true]
     ]
     array[1] = array
-    expect(htmlLog(array)).to.equal(oneLine(`
+    expect(inspect(array)).to.equal(oneLine(`
       <div><span class="reference">&lt;ref *1&gt;</span> [</div>
       <div>  [</div>
       <div>    <span class="string">&quot;foo&quot;</span>,</div>
@@ -169,7 +169,7 @@ describe('arrays', () => {
 describe('objects', () => {
 
   it('prints empty objects', () => {
-    expect(htmlLog({})).to.equal(oneLine(`
+    expect(inspect({})).to.equal(oneLine(`
       <div>{}</div>
     `))
   })
@@ -180,7 +180,7 @@ describe('objects', () => {
       baz: true,
       qux: 10
     }
-    expect(htmlLog(object)).to.equal(oneLine(`
+    expect(inspect(object)).to.equal(oneLine(`
       <div>{</div>
       <div>  foo: <span class="string">&quot;bar&quot;</span>,</div>
       <div>  baz: <span class="boolean">true</span>,</div>
@@ -194,7 +194,7 @@ describe('objects', () => {
       foo: 'bar',
       'needs-quotes': true
     }
-    expect(htmlLog(object)).to.equal(oneLine(`
+    expect(inspect(object)).to.equal(oneLine(`
       <div>{</div>
       <div>  foo: <span class="string">&quot;bar&quot;</span>,</div>
       <div>  <span class="string">&quot;needs-quotes&quot;</span>: <span class="boolean">true</span></div>
@@ -211,7 +211,7 @@ describe('objects', () => {
         'needs-quotes': true
       }
     }
-    expect(htmlLog(object)).to.equal(oneLine(`
+    expect(inspect(object)).to.equal(oneLine(`
       <div>{</div>
       <div>  foo: <span class="string">&quot;bar&quot;</span>,</div>
       <div>  <span class="string">&quot;needs-quotes&quot;</span>: <span class="boolean">true</span>,</div>
@@ -233,7 +233,7 @@ describe('objects', () => {
       foo: 'bar',
       'needs-quotes': true
     }
-    expect(htmlLog(object)).to.equal(oneLine(`
+    expect(inspect(object)).to.equal(oneLine(`
       <div>{</div>
       <div>  baz: [</div>
       <div>    <span class="number">42</span>,</div>
@@ -252,7 +252,7 @@ describe('objects', () => {
       bar: {}
     }
     object.bar = object
-    expect(htmlLog(object)).to.equal(oneLine(`
+    expect(inspect(object)).to.equal(oneLine(`
       <div><span class="reference">&lt;ref *1&gt;</span> {</div>
       <div>  foo: <span class="number">1</span>,</div>
       <div>  bar: <span class="reference">[Circular *1]</span></div>
@@ -279,7 +279,7 @@ describe('html', () => {
       </div>
     `
     const $div = document.querySelector('div')
-    expect(htmlLog($div)).to.equal(outdent`
+    expect(inspect($div)).to.equal(outdent`
       &lt;div&gt;
         &lt;h1 class=&quot;hi&quot;&gt;Hello, World!&lt;/h1&gt;
       &lt;/div&gt;
@@ -292,7 +292,7 @@ describe('dates', () => {
 
   it('prints date objects', () => {
     const date = new Date()
-    expect(htmlLog(date)).to.equal(oneLine(`
+    expect(inspect(date)).to.equal(oneLine(`
       <div>
         <span class="date">${date}</span>
       </div>
@@ -305,7 +305,7 @@ describe('other objects', () => {
 
   it("prints the object's name", () => {
     const set = new Set()
-    expect(htmlLog(set)).to.equal(oneLine(`
+    expect(inspect(set)).to.equal(oneLine(`
       <div>
         <span class="object">Set {}</span>
       </div>

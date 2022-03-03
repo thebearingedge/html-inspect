@@ -1,16 +1,16 @@
 {
-  "name": "html-log",
+  "name": "html-inspect",
   "version": "0.0.1",
   "description": "Print JavaScript values as HTML",
-  "main": "./dist/cjs/html-log.js",
-  "module": "./dist/esm/html-log.js",
+  "main": "./dist/cjs/html-inspect.js",
+  "module": "./dist/esm/html-inspect.js",
   "exports": {
     ".": {
-      "import": "./dist/esm/html-log.js",
-      "require": "./dist/cjs/html-log.js"
+      "import": "./dist/esm/html-inspect.js",
+      "require": "./dist/cjs/html-inspect.js"
     }
   },
-  "types": "dist/html-log.d.ts",
+  "types": "dist/html-inspect.d.ts",
   "files": [
     "dist/"
   ],
@@ -45,10 +45,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/thebearingedge/html-log.git"
+    "url": "git+https://github.com/thebearingedge/html-inspect.git"
   },
   "bugs": {
-    "url": "https://github.com/thebearingedge/html-log/issues"
+    "url": "https://github.com/thebearingedge/html-inspect/issues"
   },
-  "homepage": "https://github.com/thebearingedge/html-log#readme"
+  "homepage": "https://github.com/thebearingedge/html-inspect#readme"
 }

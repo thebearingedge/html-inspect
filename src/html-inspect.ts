@@ -1,4 +1,4 @@
-export function htmlLog(value: any): string {
+export function inspect(value: any): string {
   if (typeof HTMLElement !== 'undefined' &&
       value instanceof HTMLElement) {
     return escape(value.outerHTML)
