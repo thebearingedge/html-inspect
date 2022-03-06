@@ -1,6 +1,6 @@
 {
   "name": "html-inspect",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Print JavaScript values as HTML",
   "main": "./dist/cjs/html-inspect.js",
   "module": "./dist/esm/html-inspect.js",

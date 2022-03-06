@@ -98,7 +98,9 @@ function printObject(
 ): string {
   const keys = Object.keys(object)
   if (keys.length === 0) {
-    return printLine('{}', indent, comma)
+    return typeof key === 'undefined'
+      ? printLine('{}', indent, comma)
+      : printLine(`${printPropertyKey(key)}: {}`, indent)
   }
   refs.set(object, [
     refs.size + 1, // unique id for this object

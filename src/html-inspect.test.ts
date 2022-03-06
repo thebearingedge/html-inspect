@@ -253,6 +253,23 @@ describe('objects', () => {
     `))
   })
 
+  it('prints empty nested objects', () => {
+    const object = {
+      foo: 'bar',
+      'needs-quotes': true,
+      baz: {}
+    }
+    expect(inspect(object)).to.equal(oneLine(`
+      <div>
+        <div>{</div>
+        <div>  foo: <span class="string">&quot;bar&quot;</span>,</div>
+        <div>  <span class="string">&quot;needs-quotes&quot;</span>: <span class="boolean">true</span>,</div>
+        <div>  baz: {}</div>
+        <div>}</div>
+      </div>
+    `))
+  })
+
   it('prints nested arrays', () => {
     const object = {
       baz: [
