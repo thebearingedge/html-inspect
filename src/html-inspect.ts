@@ -40,7 +40,7 @@ function printArray(
       lines.push(printLine(
         `<span class="empty">empty &times; ${empty}</span>`,
         indent + 2,
-        index < array.length - 1
+        index < array.length
       ))
     }
     if (index === array.length) break

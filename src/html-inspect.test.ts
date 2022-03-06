@@ -153,6 +153,19 @@ describe('arrays', () => {
 
   it('prints sparse arrays', () => {
     // eslint-disable-next-line no-sparse-arrays
+    expect(inspect(['foo', , , 'bar', , , , 'baz'])).to.equal(oneLine(`
+      <div>
+        <div>[</div>
+        <div>  <span class="string">&quot;foo&quot;</span>,</div>
+        <div>  <span class="empty">empty &times; 2</span>,</div>
+        <div>  <span class="string">&quot;bar&quot;</span>,</div>
+        <div>  <span class="empty">empty &times; 3</span>,</div>
+        <div>  <span class="string">&quot;baz&quot;</span></div>
+        <div>]</div>
+      </div>
+    `))
+
+    // eslint-disable-next-line no-sparse-arrays
     expect(inspect(['foo', , , 'bar', , , , 'baz', ,])).to.equal(oneLine(`
       <div>
         <div>[</div>
