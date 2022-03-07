@@ -163,15 +163,13 @@ const VALID_PROPERTY_KEY = /^[a-z_$]+[a-z0-9$_]*$/i
 function printPropertyKey(key: string): string {
   return VALID_PROPERTY_KEY.test(key)
     ? escape(key)
-    : `<span class="string">&quot;${escape(key)}&quot;</span>`
+    : `<span class="string">&apos;${escape(key)}&apos;</span>`
 }
 
 function printLeaf(value: any): string {
   if (typeof value === 'function') {
-    const name = typeof value.name === 'string' && value.name !== ''
-      ? value.name
-      : '(anonymous)'
-    return `<span class="function">[Function ${escape(name)}]</span>`
+    const name = value.name ?? ''
+    return `<span class="function">&#402; ${escape(name)}()</span>`
   }
   if (value instanceof Date) {
     return `<span class="date">${value}</span>`
@@ -181,7 +179,7 @@ function printLeaf(value: any): string {
   }
   switch (typeof value) {
     case 'string':
-      return `<span class="string">&quot;${escape(value)}&quot;</span>`
+      return `<span class="string">&apos;${escape(value)}&apos;</span>`
     case 'object':
       return `<span class="object">${escape(getConstructorName(value))} {}</span>`
     case 'bigint':
@@ -222,6 +220,6 @@ function escape(value: any): string {
     .replace(AMPERSANDS, '&amp;')
     .replace(LESS_THANS, '&lt;')
     .replace(GREATER_THANS, '&gt;')
-    .replace(DOUBLE_QUOTES, '&quot;')
+    .replace(DOUBLE_QUOTES, '&apos;')
     .replace(SINGLE_QUOTES, '&apos;')
 }
