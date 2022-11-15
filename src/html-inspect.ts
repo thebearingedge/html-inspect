@@ -102,7 +102,7 @@ function printObject(
   if (keys.length === 0) {
     return typeof key === 'undefined'
       ? printLine('{}', indent, comma)
-      : printLine(`${printPropertyKey(key)}: {}`, indent)
+      : printLine(`${printPropertyKey(key)}: {}`, indent, comma)
   }
   refs.set(object, [
     refs.size + 1, // unique id for this object
