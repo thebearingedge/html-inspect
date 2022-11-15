@@ -5,8 +5,9 @@
   "spec": [
     "src/**/*.test.ts"
   ],
-  "require": [
-    "ts-node/register"
+  "node-option": [
+    "no-warnings",
+    "loader=@esbuild-kit/esm-loader"
   ],
   "watch-files": [
     "src/**/*.ts"

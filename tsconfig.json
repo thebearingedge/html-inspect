@@ -1,15 +1,13 @@
 {
   "compilerOptions": {
     "moduleResolution": "node",
+    "module": "esnext",
     "outDir": "dist/",
     "strict": true,
-    "target": "esnext",
+    "target": "esnext"
   },
   "include": [
     "src/",
     "rollup.config.ts"
-  ],
-  "ts-node": {
-    "transpileOnly": true
-  }
+  ]
 }
