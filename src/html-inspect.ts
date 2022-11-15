@@ -21,7 +21,9 @@ function printArray(
   key?: string
 ): string {
   if (array.length === 0) {
-    return printLine('[]', indent, comma)
+    return typeof key === 'undefined'
+      ? printLine('[]', indent, comma)
+      : printLine(`${printPropertyKey(key)}: []`, indent, comma)
   }
   refs.set(array, [
     refs.size + 1, // unique id for this array

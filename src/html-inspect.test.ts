@@ -308,6 +308,23 @@ describe('objects', () => {
     `))
   })
 
+  it('prints empty nested arrays', () => {
+    const object = {
+      baz: [],
+      foo: 'bar',
+      'needs-quotes': true
+    }
+    expect(inspect(object)).to.equal(oneLine(`
+      <div>
+        <div>{</div>
+        <div>  baz: [],</div>
+        <div>  foo: <span class="string">&apos;bar&apos;</span>,</div>
+        <div>  <span class="string">&apos;needs-quotes&apos;</span>: <span class="boolean">true</span></div>
+        <div>}</div>
+      </div>
+    `))
+  })
+
   it('prints circular references', () => {
     const object = {
       foo: 1,
